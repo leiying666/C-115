@@ -1,0 +1,139 @@
+// 引入头文件，包括标准输入输出库，easyX 图形库，控制台输入库，标准库和时间库
+#include<stdio.h>
+#include<easyx.h>
+#include<conio.h>
+#include<stdlib.h>
+#include<time.h>
+int main()
+{
+	// 初始化图形窗口，大小为 800 x 600 像素
+	initgraph(800, 600);
+	// 设置原点为窗口中心，x 轴正方向为右，y 轴正方向为上
+	setorigin(400, 300);
+	setaspectratio(1, -1);
+	// 设置背景颜色为浅蓝色
+	setbkcolor(RGB(164, 225, 202));
+	// 清空窗口
+	cleardevice();
+
+	// 定义球的坐标，初始值为 0
+	int x, y;
+	x = 0;
+	y = 0;
+	// 定义球的速度，初始值为 5
+	int vx = 5, vy = 5;
+	// 定义球的半径，初始值为 40
+	int r = 40;
+	// 定义挡板的左上右下坐标，初始值为 -150, -280, 150, -300
+	int barleft, bartop, barright, barbottom;
+	barleft = -150;
+	barright = 150;
+	bartop = -280;
+	barbottom = -300;
+
+
+	// 用一个无限循环来更新画面
+	while (1)
+	{
+		// 清空窗口
+		cleardevice();
+		// 用实心圆绘制球，颜色为默认的黑色
+		solidcircle(x, y, r);
+
+		// 用实心矩形绘制挡板，颜色为默认的黑色
+		solidrectangle(barleft, bartop, barright, barbottom);
+
+		// 暂停 40 毫秒，控制画面的刷新频率
+		Sleep(40);
+
+		// 判断球是否碰到窗口的上边界，如果是，就反转 y 方向的速度
+		if (y >= 300 - r)
+		{
+			vy = -vy;
+		}
+		// 判断球是否碰到窗口的左右边界，如果是，就反转 x 方向的速度
+		if (x <= -400 + r || x >= 400 - r)
+		{
+			vx = -vx;
+		}
+		// 判断球是否碰到挡板的上边，如果是，就反转 y 方向的速度
+		if (barleft <= x && x <= barright && y <= bartop + r)
+		{
+			vy = -vy;
+		}
+
+		// 根据速度更新球的坐标
+		x = x + vx;
+		y = y + vy;
+
+		// 判断是否有按键输入
+		if (_kbhit() != 0)
+		{
+			// 获取按键的字符
+			char c = _getch();
+			// 如果按了 a 键，就向左移动挡板，如果没有超出窗口的左边界
+			if (c == 'a')
+			{
+				if (barleft > -400)
+				{
+					barleft = barleft - 20;
+					barright = barright - 20;
+				}
+			}
+			// 如果按了 d 键，就向右移动挡板，如果没有超出窗口的右边界
+			else if (c == 'd')
+			{
+				if (barright < 400)
+				{
+					barleft = barleft + 20;
+					barright = barright + 20;
+				}
+			}
+
+
+		}
+
+		// 判断球是否落到窗口的底部，如果是，就重新开始游戏
+		if (y <= -300)
+		{
+			// 用当前时间作为随机数种子
+			srand((unsigned int)time(NULL));
+			// 随机生成球的初始坐标，范围在窗口的中上部
+			x = rand() % (400 + 1) - 200;
+			y = rand() % (300 + 1) - 150;
+
+
+			// 重置球的速度为 5
+			vx = 5;
+			vy = 5;
+
+			// 随机决定球的初始速度的方向
+			if (rand() % 2 == 0)
+			{
+				vy = -vy;
+			}
+			if (rand() % 2 == 0)
+			{
+				vx = -vx;
+			}
+
+			// 重置挡板的位置为中下部
+			barleft = -150;
+			barright = 150;
+			bartop = -280;
+			barbottom = -300;
+
+		}
+
+	}
+
+
+	// 等待用户按任意键退出
+	getchar();
+	// 关闭图形窗口
+	closegraph();
+	return 0;
+}
+
+
+代码没问题，是设置的问题，要从电脑设置  系统  开发者选项  终端里调成windows控制台主机
